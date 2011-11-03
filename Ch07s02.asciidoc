@@ -77,14 +77,14 @@ $name is the name of the file, without any < or + funny business. $flags is a nu
 
 
 |=======================
-O_RDONLY | Read only
-O_WRONLY | Write only
-O_RDWR | Read and write
-O_CREAT | Create the file if it doesn't exist
-O_EXCL | Fail if the file already exists
-O_APPEND | Append to the file
-O_TRUNC | Truncate the file
-O_NONBLOCK | Non-blocking access
+O_RDONLY |Read only
+O_WRONLY |Write only
+O_RDWR |Read and write
+O_CREAT |Create the file if it doesn't exist
+O_EXCL |Fail if the file already exists
+O_APPEND |Append to the file
+O_TRUNC |Truncate the file
+O_NONBLOCK |Non-blocking access
 |=========================
 
 Less common O_* flags sometimes available include O_SHLOCK, O_EXLOCK, O_BINARY, O_NOCTTY, and O_SYNC. Consult your open(2) manpage or its local equivalent for details.
