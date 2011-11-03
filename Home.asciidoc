@@ -1,15 +1,10 @@
-Perl cookbook repo
 
-* [[  Generating Biased Random Numbers | ch02s10 ]]
-
-Chapter 7 -- Files
-
-* [[Opening a File | Ch07s02 ]]
-* [[Opening Files with Unusual Filenames | Ch07s03 ]]
-* [[Expanding Tildes in Filenames | Ch07s04 ]]
-
-Chapter 8 -- File Contents
-
-* [[Reading Lines with Continuation Characters | Ch08s02 ]]
-* [[Counting Lines (or Paragraphs or Records) in a File | Ch08s03 ]]
+* Chapter 7 -- Files
+** [[Opening a File | Ch07s02 ]]
+** [[Opening Files with Unusual Filenames | Ch07s03 ]]
+** [[Expanding Tildes in Filenames | Ch07s04 ]]
+* Chapter 8 -- File Contents
+** [[Reading Lines with Continuation Characters | Ch08s02 ]]
+** [[Counting Lines (or Paragraphs or Records) in a File | Ch08s03 ]]
+** [Processing Every Word in a File | Ch08s04 ]]
 
