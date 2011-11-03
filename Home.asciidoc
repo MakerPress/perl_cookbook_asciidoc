@@ -11,5 +11,5 @@
 * Chapter 9 -- Directories
 ** [[ Directories | Ch09 ]]
 ** [[ Getting and Setting Timestamps | Ch09s02 ]]
- 
+** [[ Deleting a File | Ch09s03 ]] 
 
