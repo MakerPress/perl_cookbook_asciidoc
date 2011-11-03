@@ -4,7 +4,7 @@
 
 You want to open filenames like _~username/blah or ~/.mailrc_, but open doesn't interpret the tilde to mean a home directory.
 
-===Solution
+=== Solution
 
 Either use the glob function:
 
