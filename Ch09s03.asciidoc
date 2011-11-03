@@ -1,0 +1,38 @@
+=== Deleting a File
+
+==== Problem
+
+You want to delete a file. Perl's delete function isn't what you want.
+
+==== Solution
+
+Use Perl's unlink function:
+
+----
+unlink($FILENAME)                 or die "Can't delete $FILENAME: $!\n";
+unlink(@FILENAMES) =  = @FILENAMES    or die "Couldn't unlink all of @FILENAMES: $!\n";
+----
+
+==== Discussion
+The unlink function takes its name from the Unix syscall. Perl's unlink takes a list of filenames and returns the number of filenames successfully deleted. This return value can then be tested with || or or:
+
+----
+unlink($file) or die "Can't unlink $file: $!";
+unlink doesn't report which filenames it couldn't delete, only how many it deleted. Here's one way to test for successful deletion of many files and report the number deleted:
+unless (($count = unlink(@filelist)) =  = @filelist) {
+    warn "could only delete $count of "
+            . (@filelist) . " files";
+}
+----
+
+A foreach over @filelist would permit individual error messages.
+
+Under Unix, deleting a file from a directory requires write access to the directory,[1] not to the file, because it's the directory you're changing. Under some circumstances, you could remove a file you couldn't write to or write to a file you couldn't remove.
+
+If you delete a file that some process still has open, the operating system removes the directory entry but doesn't free up data blocks until all processes have closed the file. This is how the tmpfile function in File::Temp works (see Recipe 7.11).
+
+==== See Also
+
+The unlink function in perlfunc(1) and in Chapter 29 of Programming Perl; your system's unlink(2) manpage; Recipe 7.11
+
+[1] Unless the sticky bit, mode 01000, is turned on for the directory, which further restricts deletions to be by the file's owner only. Shared directories such as /tmp are usually mode 01777 for security reasons.
