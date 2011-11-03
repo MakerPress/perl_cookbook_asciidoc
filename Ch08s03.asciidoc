@@ -1,0 +1,71 @@
+== Counting Lines (or Paragraphs or Records) in a File
+
+=== Problem
+
+You need to compute the number of lines in a file.
+
+=== Solution
+
+Many systems have a wc program to count lines in a file:
+
+----
+$count = `wc -l < $file`;
+die "wc failed: $?" if $?;
+chomp($count);
+----
+
+You could also open the file and read line-by-line until the end, counting lines as you go:
+
+----
+open(FILE, "<", $file) or die "can't open $file: $!";
+$count++ while <FILE>;
+# $count now holds the number of lines read
+----
+
+Here's the fastest solution, assuming your line terminator really is "\n":
+
+----
+$count += tr/\n/\n/ while sysread(FILE, $_, 2 ** 20);
+----
+
+=== Discussion
+Although you can use -s $file to determine the file size in bytes, you generally cannot use it to derive a line count. See the Introduction in Chapter 9 for more on -s.
+
+If you can't or don't want to call another program to do your dirty work, you can emulate wc by opening up and reading the file yourself:
+
+----
+open(FILE, "<", $file) or die "can't open $file: $!";
+$count++ while <FILE>;
+# $count now holds the number of lines read
+----
+
+Another way of writing this is:
+
+----
+open(FILE, "<", $file) or die "can't open $file: $!";
+for ($count=0; <FILE>; $count++) { }
+----
+
+If you're not reading from any other files, you don't need the $count variable in this case. The special variable $. holds the number of lines read since a filehandle was last explicitly closed:
+
+----
+1 while <FILE>;
+$count = $.;
+----
+
+This reads in all records in the file, then discards them.
+
+To count paragraphs, set the global input record separator variable $/ to the empty string ("") before reading to make the input operator (<FH>) read a paragraph at a time.
+
+----
+$/ = "";            # enable paragraph mode for all reads
+open(FILE, "<", $file) or die "can't open $file: $!";
+1 while <FILE>;
+$para_count = $.;
+----
+
+The sysread solution reads the file a megabyte at a time. Once end-of-file is reached, sysread returns 0. This ends the loop, as does undef, which would indicate an error. The tr operation doesn't really substitute \n for \n in the string; it's an old idiom for counting occurrences of a character in a string.
+
+=== See Also
+
+The tr operator in perlop(1) and Chapter 5 of Programming Perl; your system's wc(1) manpage; the $/ entry in perlvar(1), and in the "Special Variables in Alphabetical Order" section of Chapter 28 of Programming Perl; the Introduction to Chapter 9
