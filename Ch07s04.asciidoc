@@ -47,7 +47,7 @@ open(MAILRC, "<", glob("~/.mailrc"))     # so expand tilde first
 
 The alternative solution, the substitution, uses /e to evaluate the replacement as Perl code. If a username follows the tilde, it's stored in $1, which getpwnam uses to extract the user's home directory out of the return list. This directory becomes the replacement string. If the tilde was not followed by a username, substitute in either the current HOME environment variable or the LOGDIR one. If neither of those is valid, look up the effective user ID's home directory.
 
-You could spell glob('\~gnat') as <\~gnat>, but that would look too much like a read from a filehandle, so don't do that.
+You could spell glob('\~gnat') as <~gnat>, but that would look too much like a read from a filehandle, so don't do that.
 
 === See Also
 
