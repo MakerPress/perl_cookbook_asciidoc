@@ -1,0 +1,60 @@
+== Getting and Setting Timestamps
+
+=== Problem
+
+You need to retrieve or alter when a file was last modified (written or changed) or accessed (read).
+
+=== Solution
+
+Use stat to get those times and utime to set them. Both functions are built into Perl:
+
+----
+($READTIME, $WRITETIME) = (stat($filename))[8,9];
+
+utime($NEWREADTIME, $NEWWRITETIME, $filename);
+----
+
+=== Discussion
+
+As explained in the Introduction, three different times are associated with an inode in the traditional Unix filesystem. Of these, any user can set the atime and mtime with utime, assuming the user has write access to the parent directory of the file. There is effectively no way to change the ctime. This example shows how to call utime:
+
+----
+$SECONDS_PER_DAY = 60 * 60 * 24;
+($atime, $mtime) = (stat($file))[8,9];
+$atime -= 7 * $SECONDS_PER_DAY;
+$mtime -= 7 * $SECONDS_PER_DAY;
+
+utime($atime, $mtime, $file)
+    or die "couldn't backdate $file by a week w/ utime: $!";
+----
+
+You must call utime with both atime and mtime values. If you want to change only one, you must call stat first to get the other:
+
+----
+$mtime = (stat $file)[9];
+utime(time, $mtime, $file);
+----
+
+This is easier to understand if you use File::stat:
+
+----
+use File::stat;
+utime(time, stat($file)->mtime, $file);
+----
+
+Use utime to make it appear as though you never touched a file at all (beyond its ctime being updated). For example, to edit a file, use the following program.
+
+----
+  #!/usr/bin/perl -w
+  # uvi - vi a file without changing its access times
+  
+  $file = shift or die "usage: uvi filename\n";
+  ($atime, $mtime) = (stat($file))[8,9];
+  system($ENV{EDITOR} || "vi", $file);
+  utime($atime, $mtime, $file)
+      or die "couldn't restore $file to orig times: $!";
+----
+
+=== See Also
+
+The stat and utime functions in perlfunc(1) and in Chapter 29 of Programming Perl; the standard File::stat module (also in Chapter 32 of Programming Perl); your system's utime(3) manpage
