@@ -14,7 +14,7 @@ unlink(@FILENAMES) =  = @FILENAMES    or die "Couldn't unlink all of @FILENAMES:
 ----
 
 ==== Discussion
-The unlink function takes its name from the Unix syscall. Perl's unlink takes a list of filenames and returns the number of filenames successfully deleted. This return value can then be tested with || or or:
+The unlink function takes its name from the Unix syscall. Perl's unlink takes a list of filenames and returns the number of filenames successfully deleted. This return value can then be tested with || or:
 
 ----
 unlink($file) or die "Can't unlink $file: $!";
