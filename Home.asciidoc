@@ -4,5 +4,8 @@ Perl cookbook repo
 
 Chapter 7 -- Files
 
-* [[ Working with Files | Ch07s02 ]]
+* [[Opening a File | Ch07s02 ]]
+* [[Opening Files with Unusual Filenames | Ch07s03 ]]
+* [[Opening a File | Ch07s02 ]]
+*
 
