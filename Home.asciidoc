@@ -6,4 +6,7 @@
 ** [[Reading Lines with Continuation Characters | Ch08s02 ]]
 ** [[Counting Lines (or Paragraphs or Records) in a File | Ch08s03 ]]
 ** [[Processing Every Word in a File | Ch08s04 ]]
+* Chapter 9 -- Directories
+** [[ Getting and Setting Timestamps | Ch09s02 ]]
+ 
 
