@@ -1,0 +1,70 @@
+== Processing Every Word in a File
+
+=== Problem
+
+You need to do something to every word in a file, similar to the foreach function of csh.
+
+=== Solution
+
+Either split each line on whitespace:
+
+----
+while (<>) {
+    for $chunk (split) {
+        # do something with $chunk
+    }
+}
+----
+
+or use the m//g operator to pull out one chunk at a time:
+
+----
+while (<>) {
+    while ( /(\w[\w'-]*)/g ) {
+        # do something with $1
+    }
+}
+----
+
+=== Discussion
+Decide what you mean by "word." Sometimes you want anything but whitespace, sometimes you want only program identifiers, and sometimes you want English words. Your definition governs which regular expression to use.
+
+The preceding two approaches work differently. Patterns are used in the first approach to decide what is not a word. In the second, they're used to decide what is a word.
+With these techniques, it's easy to make a word frequency counter. Use a hash to store how many times each word has been seen:
+
+----
+# Make a word frequency count
+%seen = ( );
+while (<>) {
+    while ( /(\w[\w'-]*)/g ) {
+        $seen{lc $1}++;
+    }
+}
+
+# output hash in a descending numeric sort of its values
+foreach $word ( sort { $seen{$b} <=> $seen{$a} } keys %seen) {
+    printf "%5d %s\n", $seen{$word}, $word;
+}
+----
+
+To make the example program count line frequency instead of word frequency, omit the second while loop and use $seen{lc $_}++ instead:
+
+----
+# Line frequency count
+%seen = ( );
+while (<>) {
+    $seen{lc $_}++;
+}
+foreach $line ( sort { $seen{$b} <=> $seen{$a} } keys %seen ) {
+    printf "%5d %s", $seen{$line}, $line;
+}
+----
+
+Odd things that may need to be considered as words include "M.I.T.", "Micro$oft", "o'clock", "49ers", "street-wise", "and/or", "&", "c/o", "St.", "Tschüß", and "Niño". Bear this in mind when you choose a pattern to match. The last two require you to place a use locale in your program and then use \w for a word character in the current locale, or else use the Unicode letter property if you have Unicode text:
+
+----
+/(\p{Letter}[\p{Letter}'-]*)/
+----
+
+=== See Also
+perlre(1); the split function in perlfunc(1) and in Chapter 29 of Programming Perl; Recipe 6.3; Recipe 6.23
