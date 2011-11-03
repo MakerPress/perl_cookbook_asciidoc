@@ -66,7 +66,6 @@ Filename | Read | Write | Append | Create | Trunc | O_flags | Char
 
 Here's a tip: you almost never want to use +> or +>>. The first clobbers your file before you can read it, and the second one can be confusing. Although you can read from anywhere with +>>, many systems jump to the end of the file when you write.
 
-
 The sysopen function takes either three or four arguments:
 
 ----
@@ -79,12 +78,19 @@ $name is the name of the file, without any < or + funny business. $flags is a nu
 
 |================================================
 O_RDONLY | Read only
+
 O_WRONLY | Write only
+
 O_RDWR | Read and write
+
 O_CREAT | Create the file if it doesn't exist
+
 O_EXCL | Fail if the file already exists
+
 O_APPEND | Append to the file
+
 O_TRUNC | Truncate the file
+
 O_NONBLOCK | Non-blocking access
 |================================================
 
