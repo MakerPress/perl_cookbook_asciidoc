@@ -15,7 +15,11 @@ open(SOURCE, "< $path")
 
 open(SINK, "> $path")
     or die "Couldn't open $path for writing: $!\n";
+----
+
 When called with three (or more) arguments, the mode is split out from the path, lest there be any ambiguity between one and the other:
+
+----
 open(SOURCE, "<", $path)
     or die "Couldn't open $path for reading: $!\n";
 
@@ -33,7 +37,11 @@ sysopen(SOURCE, $path, O_RDONLY)
 
 sysopen(SINK, $path, O_WRONLY, 0600)
     or die "Couldn't open $path for writing: $!\n";
+----
+
 If you pass open or sysopen a scalar variable that's undefined, Perl fills in that variable with a new, anonymous filehandle.
+
+----
 open(my $fh, "<", $path)
     or die "Couldn't open $path for reading: $!\n";
 ----
@@ -45,8 +53,8 @@ The open function quickly and conveniently solves the problem of associating a f
 
 Most programmers meet open long before they meet sysopen. Table 7-1 shows how open file-access modes (the "Filename" column) correspond to sysopen constants ("O_ flags") and to the fopen(3) strings that IO::File->new can take ("Char"). "Read" and "Write" indicate that the filehandle may be read from or written to. "Append" means no matter where you are in the file, output goes to the end of the file (on most systems). "Create" indicates whether the open statement creates a file if one having the given name doesn't already exist. "Trunc" indicates open will clobber any existing data if the file already exists.
 
-Table 7-1. File-access modes
-
+. File-access modes
+|================================================
 Filename | Read | Write | Append | Create | Trunc | O_flags | Char
 < file | yes | no | no | no | no | RDONLY | "r"
 > file | no | yes | no | yes | yes | WRONLY TRUNC CREAT | "w"
@@ -54,7 +62,7 @@ Filename | Read | Write | Append | Create | Trunc | O_flags | Char
 +< file | yes | yes | no | no | no | RDWR | "r+"
 +> file | yes | yes | no | yes | yes | RDWR TRUNC CREAT | "w+"
 +>> file | yes | yes | yes | yes | no | RDWR APPEND CREAT | "a+"
-
+|================================================
 
 Here's a tip: you almost never want to use +> or +>>. The first clobbers your file before you can read it, and the second one can be confusing. Although you can read from anywhere with +>>, many systems jump to the end of the file when you write.
 The sysopen function takes either three or four arguments:
