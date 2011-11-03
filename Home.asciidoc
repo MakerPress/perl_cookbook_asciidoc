@@ -1,3 +1,11 @@
+This is a random sampling of recipes from the Perl Cookbook by Tom Christiansen and Nat Torkington.  It's a total experiment, so take this stuff for granted for now!!!
+
+This is the index page that is used to glue all the separate files into a single book project.  You can use this page to build a PDF or EPUB.  We're working on having these generate using the "official" O'Reilly templates:
+
+* [[ Main book include file | cookbook_INDEX ]]
+
+Here are the various recipes.  We're starting with a sampling and see where we get.
+
 * Chapter 7 -- Files
 ** [[Files | Ch07]]
 ** [[Opening a File | Ch07s02 ]]
