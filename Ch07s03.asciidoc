@@ -1,0 +1,70 @@
+== Opening Files with Unusual Filenames
+
+=== Problem
+
+You want to open a file with a funny filename, such as "-", or one that starts with <, >, or |; has leading or trailing whitespace; or ends with |. You don't want these to trigger open's do-what-I-mean behavior, since in this case, that's not what you mean.
+
+=== Solution
+
+When open is called with three arguments, not two, placing the mode in the second argument:
+
+----
+open(HANDLE, "<", $filename)          or die "cannot open $filename : $!\n";
+----
+
+Or simply use sysopen:
+
+----
+sysopen(HANDLE, $filename, O_RDONLY)   or die "cannot open $filename: $!\n";
+----
+
+=== Discussion
+
+When open is called with three arguments, the access mode and the filename are kept separate. But when called with only two arguments, open has to extract the access mode and the filename from a single string. If your filename begins with the same characters used to specify an access mode, open could easily do something unexpected. Imagine the following code:
+
+----
+$filename = shift @ARGV;
+open(INPUT, $filename)               or die "Couldn't open $filename : $!\n";
+----
+
+If the user gave ">/etc/passwd" as the filename on the command line, this code would attempt to open /etc/passwd for writing. We can try to give an explicit mode, say for writing:
+
+----
+open(OUTPUT, ">$filename")
+    or die "Couldn't open $filename for writing: $!\n";
+----
+
+but even this would let the user give a filename of ">data", and the code would append to the file data instead of erasing the old contents.
+
+The easiest solution is to pass three arguments to open, where the second argument is the mode and the third the path. Now there can be neither confusion nor subterfuge.
+
+----
+open(OUTPUT, ">", $filename)
+    or die "Couldn't open $filename for writing: $!\n";
+----
+
+Another solution is sysopen, which also takes the mode and filename as distinct arguments:
+
+----
+use Fcntl;                          # for file constants
+
+sysopen(OUTPUT, $filename, O_WRONLY|O_TRUNC)
+    or die "Can't open $filename for writing: $!\n";
+----
+
+This special way that open interprets filenames, sometimes referred to as magic open, is a matter of convenience—and usually a good thing. You don't have to worry about a space or two between the access mode and the path. You never have to use the special case of "-" to mean standard input or output. If you write a filter and use a simple open, users can pass "gzip -dc bible.gz|" as a filename, and your filter will automatically run the decoding program.
+
+It's only those programs that run under special privilege that should worry about security with open. When designing programs that will be run on someone else's behalf, such as setuid programs or CGI scripts, the prudent programmer always considers whether the user can supply their own filename and thereby cajole what would otherwise appear to be a normal open used for simple reading into overwriting a file or even running another program. Perl's -T command-line flag to enable taint-checking would take care of this.
+
+In versions of Perl without three-argument open (those before v5.6.0), one had little recourse but to resort to the following sort of chicanery to cope with filenames with leading or trailing whitespace:
+
+----
+$file =~ s#^(\s)#./$1#;
+open(OUTPUT, "> $file\0")
+        or die "Couldn't open $file for OUTPUT : $!\n";
+----
+
+The substitution protects initial whitespace (this cannot occur in fully specified filenames like "/etc/passwd", but only in relative filenames like ">passwd"). The NUL byte (ASCII 0, "\0") isn't considered part of the filename by open, but it does prevent trailing whitespace from being ignored.
+
+=== See Also
+The open and sysopen functions in perlfunc(1) and Chapter 29 of Programming Perl; Recipe 7.1; Recipe 7.14; Recipe 16.2; Recipe 19.4; Recipe 19.5
