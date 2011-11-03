@@ -2,7 +2,7 @@
 
 === Problem
 
-You want to open filenames like _\~username/blah_ or _~/.mailrc_, but +open+ doesn't interpret the tilde to mean a home directory.
+You want to open filenames like _\~username/blah_ or _~/.mailrc_, but open doesn't interpret the tilde to mean a home directory.
 
 === Solution
 
