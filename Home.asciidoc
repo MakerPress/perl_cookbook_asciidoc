@@ -6,6 +6,6 @@ Chapter 7 -- Files
 
 * [[Opening a File | Ch07s02 ]]
 * [[Opening Files with Unusual Filenames | Ch07s03 ]]
-* [[Opening a File | Ch07s02 ]]
+* [[Expanding Tildes in Filenames | Ch07s04 ]]
 *
 
