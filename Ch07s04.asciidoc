@@ -1,0 +1,54 @@
+== Expanding Tildes in Filenames
+
+=== Problem
+
+You want to open filenames like _~username/blah or ~/.mailrc_, but open doesn't interpret the tilde to mean a home directory.
+
+===Solution
+
+Either use the glob function:
+
+----
+open(FH, glob("~joebob/somefile")) || die "Couldn't open file: $!";
+----
+
+or expand the filename manually with a substitution:
+
+----
+   $filename =~ s{ ^ ~ ( [^/]* ) }
+              { $1
+                    ? (getpwnam($1))[7]
+                    : ( $ENV{HOME} || $ENV{LOGDIR}
+                         || (getpwuid($<))[7]
+                       )
+}ex;
+----
+
+Discussion
+
+There is a useful convention, begun with the Unix csh shell and propagated widely by web addresses of the form http://www.example.com/~user/, that ~ in a filename represents a user's home directory. Thus:
+
+----
+    ~              # current user's home directory
+    ~/blah         # file blah in current user's home directory
+    ~user          # a particular user's home directory
+    ~user/blah     # file blah in a particular user's home directory
+----
+
+Unfortunately, Perl's open function does not expand wildcards, including tildes. As of the v5.6 release, Perl internally uses the File::Glob module when you use the glob operator. So all you need to do is glob the result first.
+
+----
+open(MAILRC, "<", "~/.mailrc")           # WRONG: tilde is a shell thing
+    or die "can't open ~/.mailrc: $!";
+
+open(MAILRC, "<", glob("~/.mailrc"))     # so expand tilde first
+    or die "can't open ~/.mailrc: $!";
+----
+
+The alternative solution, the substitution, uses /e to evaluate the replacement as Perl code. If a username follows the tilde, it's stored in $1, which getpwnam uses to extract the user's home directory out of the return list. This directory becomes the replacement string. If the tilde was not followed by a username, substitute in either the current HOME environment variable or the LOGDIR one. If neither of those is valid, look up the effective user ID's home directory.
+
+You could spell glob('~gnat') as <~gnat>, but that would look too much like a read from a filehandle, so don't do that.
+
+=== See Also
+
+The glob and getpwnam functions in perlfunc(1) and Chapter 29 of Programming Perl; your system's getpwnam(2) manpage; Recipe 9.6
