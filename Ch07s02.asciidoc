@@ -59,7 +59,7 @@ Most programmers meet open long before they meet sysopen. Table 7-1 shows how op
 | < file | yes | no | no | no | no | RDONLY | "r"
 | > file | no | yes | no | yes | yes | WRONLY TRUNC CREAT | "w"
 | >> file | no | yes | yes | yes | no | WRONLY APPEND CREAT | "a"
-| \+< file | yes | yes | no | no | no | RDWR | "r+" | 
+| +< file | yes | yes | no | no | no | RDWR | "r+" 
 | +> file | yes | yes | no | yes | yes | RDWR TRUNC CREAT | "w+"
 | +>> file | yes | yes | yes | yes | no | RDWR APPEND CREAT | "a+"
 |================================================
