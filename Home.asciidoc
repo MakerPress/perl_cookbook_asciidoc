@@ -1,3 +1,8 @@
 Perl cookbook repo
 
 * [[  Generating Biased Random Numbers | ch02s10 ]]
+
+Chapter 7 -- Files
+
+* [[ Working with Files | Ch07s02 ]]
+
