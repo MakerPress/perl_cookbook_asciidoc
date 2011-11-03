@@ -24,7 +24,7 @@ or expand the filename manually with a substitution:
 }ex;
 ----
 
-Discussion
+=== Discussion
 
 There is a useful convention, begun with the Unix csh shell and propagated widely by web addresses of the form http://www.example.com/~user/, that ~ in a filename represents a user's home directory. Thus:
 
