@@ -1,10 +1,10 @@
-== Getting and Setting Timestamps
+=== Getting and Setting Timestamps
 
-=== Problem
+==== Problem
 
 You need to retrieve or alter when a file was last modified (written or changed) or accessed (read).
 
-=== Solution
+==== Solution
 
 Use stat to get those times and utime to set them. Both functions are built into Perl:
 
@@ -14,7 +14,7 @@ Use stat to get those times and utime to set them. Both functions are built into
 utime($NEWREADTIME, $NEWWRITETIME, $filename);
 ----
 
-=== Discussion
+==== Discussion
 
 As explained in the Introduction, three different times are associated with an inode in the traditional Unix filesystem. Of these, any user can set the atime and mtime with utime, assuming the user has write access to the parent directory of the file. There is effectively no way to change the ctime. This example shows how to call utime:
 
@@ -55,6 +55,6 @@ Use utime to make it appear as though you never touched a file at all (beyond it
       or die "couldn't restore $file to orig times: $!";
 ----
 
-=== See Also
+==== See Also
 
 The stat and utime functions in perlfunc(1) and in Chapter 29 of Programming Perl; the standard File::stat module (also in Chapter 32 of Programming Perl); your system's utime(3) manpage

@@ -1,10 +1,10 @@
-== Opening a File
+=== Opening a File
 
-=== Problem
+==== Problem
 
 You want to read or write a file from Perl.
 
-=== Solution
+==== Solution
 
 Use open with two arguments for convenience or with three arguments for precision. Use sysopen for access to low-level features.
 The open function takes arguments specifying the internal filehandle to open, the external filename, and some indication of how to open it (the access mode). Called with only two arguments, the second comprises both path and mode:
@@ -46,7 +46,7 @@ open(my $fh, "<", $path)
     or die "Couldn't open $path for reading: $!\n";
 ----
 
-=== Discussion
+==== Discussion
 
 All input and output goes through filehandles, regardless of whether filehandles are mentioned. Filehandles aren't exclusively connected to regular files in the filesystem—they're also used to communicate with other programs (see Chapter 16) and for network communication (see Chapter 17). The open function can also be used to manipulate file descriptors, as discussed in Recipe 7.9.
 The open function quickly and conveniently solves the problem of associating a filehandle with a file. It permits a shorthand for common access modes (reading, writing, reading and writing, appending) passed in with the filename. It doesn't let you control the permissions that files are created with or even whether files are created. For this level of control, you need sysopen, which uses constants provided by the Fcntl module to control individual settings like read, write, create, and truncate.
@@ -59,12 +59,12 @@ Most programmers meet open long before they meet sysopen. Table 7-1 shows how op
 | < file | yes | no | no | no | no | RDONLY | "r"
 | > file | no | yes | no | yes | yes | WRONLY TRUNC CREAT | "w"
 | >> file | no | yes | yes | yes | no | WRONLY APPEND CREAT | "a"
-| +< file | yes | yes | no | no | no | RDWR | "r+" | 
-| +> file | yes | yes | no | yes | yes | RDWR TRUNC CREAT | "w+"
-| +>> file | yes | yes | yes | yes | no | RDWR APPEND CREAT | "a+"
+| \+< file | yes | yes | no | no | no | RDWR | "r+" | 
+| \+> file | yes | yes | no | yes | yes | RDWR TRUNC CREAT | "w+"
+| \+>> file | yes | yes | yes | yes | no | RDWR APPEND CREAT | "a+"
 |================================================
 
-Here's a tip: you almost never want to use +> or +>>. The first clobbers your file before you can read it, and the second one can be confusing. Although you can read from anywhere with +>>, many systems jump to the end of the file when you write.
+Here's a tip: you almost never want to use \+> or \+>>. The first clobbers your file before you can read it, and the second one can be confusing. Although you can read from anywhere with +>>, many systems jump to the end of the file when you write.
 
 The sysopen function takes either three or four arguments:
 
@@ -150,6 +150,6 @@ sysopen(FH, $path, O_RDWR|O_EXCL|O_CREAT, 0600)     or die $!;
 
 We use a creation mask of 0600 here only to show how to create a private file. The argument is normally omitted.
 
-=== See Also
+==== See Also
 
 The open, sysopen, and umask functions in perlfunc(1) and Chapter 29 of Programming Perl; the perlopentut(1) manpage; the documentation for the standard IO::File and Fcntl modules (also in Chapter 32 of Programming Perl); your system's open(2), fopen(3), and umask(2) manpages; Recipe 7.2; Recipe 9.11

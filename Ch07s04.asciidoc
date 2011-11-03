@@ -1,10 +1,10 @@
-== Expanding Tildes in Filenames
+=== Expanding Tildes in Filenames
 
-=== Problem
+==== Problem
 
 You want to open filenames like _\~username/blah_ or _~/.mailrc_, but open doesn't interpret the tilde to mean a home directory.
 
-=== Solution
+==== Solution
 
 Either use the glob function:
 
@@ -24,7 +24,7 @@ or expand the filename manually with a substitution:
 }ex;
 ----
 
-=== Discussion
+==== Discussion
 
 There is a useful convention, begun with the Unix csh shell and propagated widely by web addresses of the form http://www.example.com/\~user/, that ~ in a filename represents a user's home directory. Thus:
 
@@ -49,6 +49,6 @@ The alternative solution, the substitution, uses /e to evaluate the replacement 
 
 You could spell glob('\~gnat') as <~gnat>, but that would look too much like a read from a filehandle, so don't do that.
 
-=== See Also
+==== See Also
 
 The glob and getpwnam functions in perlfunc(1) and Chapter 29 of Programming Perl; your system's getpwnam(2) manpage; Recipe 9.6

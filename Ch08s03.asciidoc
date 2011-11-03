@@ -1,10 +1,10 @@
-== Counting Lines (or Paragraphs or Records) in a File
+=== Counting Lines (or Paragraphs or Records) in a File
 
-=== Problem
+==== Problem
 
 You need to compute the number of lines in a file.
 
-=== Solution
+==== Solution
 
 Many systems have a wc program to count lines in a file:
 
@@ -28,7 +28,7 @@ Here's the fastest solution, assuming your line terminator really is "\n":
 $count += tr/\n/\n/ while sysread(FILE, $_, 2 ** 20);
 ----
 
-=== Discussion
+==== Discussion
 Although you can use -s $file to determine the file size in bytes, you generally cannot use it to derive a line count. See the Introduction in Chapter 9 for more on -s.
 
 If you can't or don't want to call another program to do your dirty work, you can emulate wc by opening up and reading the file yourself:
@@ -66,6 +66,6 @@ $para_count = $.;
 
 The sysread solution reads the file a megabyte at a time. Once end-of-file is reached, sysread returns 0. This ends the loop, as does undef, which would indicate an error. The tr operation doesn't really substitute \n for \n in the string; it's an old idiom for counting occurrences of a character in a string.
 
-=== See Also
+==== See Also
 
 The tr operator in perlop(1) and Chapter 5 of Programming Perl; your system's wc(1) manpage; the $/ entry in perlvar(1), and in the "Special Variables in Alphabetical Order" section of Chapter 28 of Programming Perl; the Introduction to Chapter 9

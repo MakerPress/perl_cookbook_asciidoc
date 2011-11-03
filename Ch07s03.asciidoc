@@ -1,10 +1,10 @@
-== Opening Files with Unusual Filenames
+=== Opening Files with Unusual Filenames
 
-=== Problem
+==== Problem
 
 You want to open a file with a funny filename, such as "-", or one that starts with <, >, or |; has leading or trailing whitespace; or ends with |. You don't want these to trigger open's do-what-I-mean behavior, since in this case, that's not what you mean.
 
-=== Solution
+==== Solution
 
 When open is called with three arguments, not two, placing the mode in the second argument:
 
@@ -18,7 +18,7 @@ Or simply use sysopen:
 sysopen(HANDLE, $filename, O_RDONLY)   or die "cannot open $filename: $!\n";
 ----
 
-=== Discussion
+==== Discussion
 
 When open is called with three arguments, the access mode and the filename are kept separate. But when called with only two arguments, open has to extract the access mode and the filename from a single string. If your filename begins with the same characters used to specify an access mode, open could easily do something unexpected. Imagine the following code:
 
@@ -66,5 +66,5 @@ open(OUTPUT, "> $file\0")
 
 The substitution protects initial whitespace (this cannot occur in fully specified filenames like "/etc/passwd", but only in relative filenames like ">passwd"). The NUL byte (ASCII 0, "\0") isn't considered part of the filename by open, but it does prevent trailing whitespace from being ignored.
 
-=== See Also
+==== See Also
 The open and sysopen functions in perlfunc(1) and Chapter 29 of Programming Perl; Recipe 7.1; Recipe 7.14; Recipe 16.2; Recipe 19.4; Recipe 19.5

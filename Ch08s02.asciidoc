@@ -1,10 +1,10 @@
-== Reading Lines with Continuation Characters
+=== Reading Lines with Continuation Characters
 
-=== Problem
+==== Problem
 
 You have a file with long lines split over two or more lines, with backslashes to indicate that a continuation line follows. You want to rejoin those split lines. Makefiles, shell scripts, and many other scripting or configuration languages let you break a long line into several shorter ones in this fashion.
 
-=== Solution
+==== Solution
 
 Build up the complete lines one at a time until reaching one without a backslash:
 
@@ -19,7 +19,7 @@ while (defined($line = <FH>) ) {
 }
 ----
 
-=== Discussion
+==== Discussion
 
 Here's an example input file:
 
@@ -45,5 +45,5 @@ if ($line =~ s/\\\s*$//) {
 
 Unfortunately, even if your program is forgiving, surely others will not be. Remember to be liberal in what you accept, but conservative in what you produce.
 
-=== See Also
+==== See Also
 The chomp function in perlfunc(1) and in Chapter 29 of Programming Perl; the redo keyword in the "Loop Control" sections of perlsyn(1) and Chapter 4 of Programming Perl

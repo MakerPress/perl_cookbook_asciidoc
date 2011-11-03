@@ -1,9 +1,9 @@
-== Generating Biased Random Numbers
+=== Generating Biased Random Numbers
 
-=== Problem
+==== Problem
 You want to pick a random value where the probabilities of the values are not equal (the distribution is not even). You might be trying to randomly select a banner to display on a web page, given a set of relative weights saying how often each banner is to be displayed. Alternatively, you might want to simulate behavior according to a normal distribution (the bell curve).
 
-=== Solution
+==== Solution
 
 If you want a random value distributed according to a specific function—e.g., the Gaussian (Normal) distribution—consult a statistics textbook to find the appropriate function or algorithm. This subroutine generates random numbers that are normally distributed, with a standard deviation of 1 and a mean of 0:
 
@@ -65,7 +65,7 @@ sub weighted_rand {
 }
 ----
 
-=== Discussion
+==== Discussion
 
 The gaussian_rand function implements the polar Box Muller method for turning two independent, uniformly distributed random numbers between 0 and 1 (such as rand returns) into two numbers with a mean of 0 and a standard deviation of 1 (i.e., a Gaussian distribution). To generate numbers with a different mean and standard deviation, multiply the output of gaussian_rand by the new standard deviation, and then add the new mean:
 
@@ -84,5 +84,5 @@ The weighted_rand function picks a random number between 0 and 1. It then uses t
 
 Also, the CPAN module Math::Random has functions to return random numbers from a variety of distributions.
 
-=== See Also
+==== See Also
 The rand function in perlfunc(1) and Chapter 29 of Programming Perl; Recipe 2.6; the documentation for the CPAN module Math::Random

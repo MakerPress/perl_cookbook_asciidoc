@@ -1,12 +1,15 @@
 * Chapter 7 -- Files
+** [[Files | Ch07]]
 ** [[Opening a File | Ch07s02 ]]
 ** [[Opening Files with Unusual Filenames | Ch07s03 ]]
 ** [[Expanding Tildes in Filenames | Ch07s04 ]]
 * Chapter 8 -- File Contents
+** [[File Contents | Ch08]]
 ** [[Reading Lines with Continuation Characters | Ch08s02 ]]
 ** [[Counting Lines (or Paragraphs or Records) in a File | Ch08s03 ]]
 ** [[Processing Every Word in a File | Ch08s04 ]]
 * Chapter 9 -- Directories
+** [[ Directories | Ch09 ]]
 ** [[ Getting and Setting Timestamps | Ch09s02 ]]
  
 

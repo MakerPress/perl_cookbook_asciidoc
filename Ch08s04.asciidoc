@@ -1,10 +1,10 @@
-== Processing Every Word in a File
+=== Processing Every Word in a File
 
-=== Problem
+==== Problem
 
 You need to do something to every word in a file, similar to the foreach function of csh.
 
-=== Solution
+==== Solution
 
 Either split each line on whitespace:
 
@@ -26,7 +26,8 @@ while (<>) {
 }
 ----
 
-=== Discussion
+==== Discussion
+
 Decide what you mean by "word." Sometimes you want anything but whitespace, sometimes you want only program identifiers, and sometimes you want English words. Your definition governs which regular expression to use.
 
 The preceding two approaches work differently. Patterns are used in the first approach to decide what is not a word. In the second, they're used to decide what is a word.
@@ -66,5 +67,5 @@ Odd things that may need to be considered as words include "M.I.T.", "Micro$oft"
 /(\p{Letter}[\p{Letter}'-]*)/
 ----
 
-=== See Also
+==== See Also
 perlre(1); the split function in perlfunc(1) and in Chapter 29 of Programming Perl; Recipe 6.3; Recipe 6.23
