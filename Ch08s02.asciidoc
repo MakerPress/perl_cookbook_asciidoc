@@ -1,0 +1,49 @@
+== Reading Lines with Continuation Characters
+
+=== Problem
+
+You have a file with long lines split over two or more lines, with backslashes to indicate that a continuation line follows. You want to rejoin those split lines. Makefiles, shell scripts, and many other scripting or configuration languages let you break a long line into several shorter ones in this fashion.
+
+=== Solution
+
+Build up the complete lines one at a time until reaching one without a backslash:
+
+----
+while (defined($line = <FH>) ) {
+    chomp $line;
+    if ($line =~ s/\\$//) {
+        $line .= <FH>;
+        redo unless eof(FH);
+    }
+    # process full record in $line here
+}
+----
+
+=== Discussion
+
+Here's an example input file:
+
+----
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
+        $(TEXINFOS) $(INFOS) $(MANS) $(DATA)
+DEP_DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
+        $(TEXINFOS) $(INFO_DEPS) $(MANS) $(DATA) \
+        $(EXTRA_DIST)
+----
+
+You'd like to process that file a record at a time with the escaped newlines ignored. The first record would then be the first two lines, the second record the next three lines, etc.
+
+Here's how the algorithm works. The while loop reads lines one at a time. The substitution operator s/// tries to remove a trailing backslash. If the substitution fails, we've found a line without a backslash at the end. Otherwise, read another record, concatenate it onto the accumulating $line variable, and use redo to jump back to just inside the opening brace of the while loop. This lands us back on the chomp.
+
+A frequent problem with files intended to be in this format arises when unnoticed spaces or tabs follow the backslash before the newline. The substitution that found continuation lines would be more forgiving if written this way:
+
+----
+if ($line =~ s/\\\s*$//) { 
+    # as before
+}
+----
+
+Unfortunately, even if your program is forgiving, surely others will not be. Remember to be liberal in what you accept, but conservative in what you produce.
+
+=== See Also
+The chomp function in perlfunc(1) and in Chapter 29 of Programming Perl; the redo keyword in the "Loop Control" sections of perlsyn(1) and Chapter 4 of Programming Perl
