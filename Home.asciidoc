@@ -11,4 +11,5 @@ Chapter 7 -- Files
 Chapter 8 -- File Contents
 
 * [[Reading Lines with Continuation Characters | Ch08s02 ]]
+* [[Counting Lines (or Paragraphs or Records) in a File | Ch08s03 ]]
 
