@@ -76,23 +76,16 @@ sysopen(FILEHANDLE, $name, $flags, $perms) or die "Can't open $name : $!";
 $name is the name of the file, without any < or + funny business. $flags is a number, formed by ORing together separate values for O_CREAT, O_WRONLY, O_TRUNC, etc. Availability of particular O_* constants depends on your operating system, so consult the online documentation for this (usually open(2), but not always), or look in /usr/include/fcntl.h. Common ones are:
 
 
-|================================================
+|=======================
 O_RDONLY | Read only
-
 O_WRONLY | Write only
-
 O_RDWR | Read and write
-
 O_CREAT | Create the file if it doesn't exist
-
 O_EXCL | Fail if the file already exists
-
 O_APPEND | Append to the file
-
 O_TRUNC | Truncate the file
-
 O_NONBLOCK | Non-blocking access
-|================================================
+|=========================
 
 Less common O_* flags sometimes available include O_SHLOCK, O_EXLOCK, O_BINARY, O_NOCTTY, and O_SYNC. Consult your open(2) manpage or its local equivalent for details.
 
