@@ -1,0 +1,111 @@
+== Opening a File
+
+=== Problem
+
+You want to read or write a file from Perl.
+
+=== Solution
+
+Use open with two arguments for convenience or with three arguments for precision. Use sysopen for access to low-level features.
+The open function takes arguments specifying the internal filehandle to open, the external filename, and some indication of how to open it (the access mode). Called with only two arguments, the second comprises both path and mode:
+
+----
+open(SOURCE, "< $path")
+    or die "Couldn't open $path for reading: $!\n";
+
+open(SINK, "> $path")
+    or die "Couldn't open $path for writing: $!\n";
+When called with three (or more) arguments, the mode is split out from the path, lest there be any ambiguity between one and the other:
+open(SOURCE, "<", $path)
+    or die "Couldn't open $path for reading: $!\n";
+
+open(SINK, ">", $path)
+    or die "Couldn't open $path for writing: $!\n";
+----
+
+The sysopen function takes either three or four arguments: filehandle, filename, file-access flags, plus an optional permissions value. The flags argument is a number constructed from constants provided by the Fcntl module:
+
+----
+use Fcntl;
+
+sysopen(SOURCE, $path, O_RDONLY)
+    or die "Couldn't open $path for reading: $!\n";
+
+sysopen(SINK, $path, O_WRONLY, 0600)
+    or die "Couldn't open $path for writing: $!\n";
+If you pass open or sysopen a scalar variable that's undefined, Perl fills in that variable with a new, anonymous filehandle.
+open(my $fh, "<", $path)
+    or die "Couldn't open $path for reading: $!\n";
+----
+
+=== Discussion
+
+All input and output goes through filehandles, regardless of whether filehandles are mentioned. Filehandles aren't exclusively connected to regular files in the filesystem—they're also used to communicate with other programs (see Chapter 16) and for network communication (see Chapter 17). The open function can also be used to manipulate file descriptors, as discussed in Recipe 7.9.
+The open function quickly and conveniently solves the problem of associating a filehandle with a file. It permits a shorthand for common access modes (reading, writing, reading and writing, appending) passed in with the filename. It doesn't let you control the permissions that files are created with or even whether files are created. For this level of control, you need sysopen, which uses constants provided by the Fcntl module to control individual settings like read, write, create, and truncate.
+
+Most programmers meet open long before they meet sysopen. Table 7-1 shows how open file-access modes (the "Filename" column) correspond to sysopen constants ("O_ flags") and to the fopen(3) strings that IO::File->new can take ("Char"). "Read" and "Write" indicate that the filehandle may be read from or written to. "Append" means no matter where you are in the file, output goes to the end of the file (on most systems). "Create" indicates whether the open statement creates a file if one having the given name doesn't already exist. "Trunc" indicates open will clobber any existing data if the file already exists.
+
+Table 7-1. File-access modes
+
+Filename | Read | Write | Append | Create | Trunc | O_flags | Char
+< file | yes | no | no | no | no | RDONLY | "r"
+> file | no | yes | no | yes | yes | WRONLY TRUNC CREAT | "w"
+>> file | no | yes | yes | yes | no | WRONLY APPEND CREAT | "a"
++< file | yes | yes | no | no | no | RDWR | "r+"
++> file | yes | yes | no | yes | yes | RDWR TRUNC CREAT | "w+"
++>> file | yes | yes | yes | yes | no | RDWR APPEND CREAT | "a+"
+
+
+Here's a tip: you almost never want to use +> or +>>. The first clobbers your file before you can read it, and the second one can be confusing. Although you can read from anywhere with +>>, many systems jump to the end of the file when you write.
+The sysopen function takes either three or four arguments:
+sysopen(FILEHANDLE, $name, $flags)         or die "Can't open $name : $!";
+sysopen(FILEHANDLE, $name, $flags, $perms) or die "Can't open $name : $!";
+$name is the name of the file, without any < or + funny business. $flags is a number, formed by ORing together separate values for O_CREAT, O_WRONLY, O_TRUNC, etc. Availability of particular O_* constants depends on your operating system, so consult the online documentation for this (usually open(2), but not always), or look in /usr/include/fcntl.h. Common ones are:
+O_RDONLY
+Read only
+O_WRONLY
+Write only
+O_RDWR
+Read and write
+O_CREAT
+Create the file if it doesn't exist
+O_EXCL
+Fail if the file already exists
+O_APPEND
+Append to the file
+O_TRUNC
+Truncate the file
+O_NONBLOCK
+Non-blocking access
+Less common O_* flags sometimes available include O_SHLOCK, O_EXLOCK, O_BINARY, O_NOCTTY, and O_SYNC. Consult your open(2) manpage or its local equivalent for details.
+If you omit the $perms argument to sysopen, Perl uses the octal value 0666. These permissions values need to be in octal and are modified by your process's current umask. A umask value is a number representing disabled permissions bits—if your umask were 027 (group can't write; others can't read, write, or execute), then passing sysopen 0666 would create a file with mode 0640 (mathematically, 0666 & ~027 is 0640).
+If umask seems confusing, here's some advice: supply a creation mode of 0666 for regular files and one of 0777 for directories and executable files. This gives users a choice: if they want protected files, they can choose process umasks of 022, 027, or even the particularly antisocial mask of 077. Programs should rarely if ever make policy decisions better left to the user. One exception, though, is files that should be kept private: mail files, web browser cookies, .rhosts files, and so on. In short, seldom if ever use 0644 as argument to sysopen because that takes away the user's option to have a more permissive umask.
+Here are examples of open and sysopen in action.
+To open for reading:
+open(FH, "<", $path)                                or die $!;
+sysopen(FH, $path, O_RDONLY)                        or die $!;
+To open for writing, create a new file if needed, or else truncate an old one:
+open(FH, ">", $path)                                or die $!;
+sysopen(FH, $path, O_WRONLY|O_TRUNC|O_CREAT)        or die $!;
+sysopen(FH, $path, O_WRONLY|O_TRUNC|O_CREAT, 0600)  or die $!;
+To open for writing, create a new file, but that file must not previously exist:
+sysopen(FH, $path, O_WRONLY|O_EXCL|O_CREAT)         or die $!;
+sysopen(FH, $path, O_WRONLY|O_EXCL|O_CREAT, 0600)   or die $!;
+To open for appending, creating it if necessary:
+open(FH, ">>", $path)                               or die $!;
+sysopen(FH, $path, O_WRONLY|O_APPEND|O_CREAT)       or die $!;
+sysopen(FH, $path, O_WRONLY|O_APPEND|O_CREAT, 0600) or die $!;
+To open for appending, where the file must exist:
+sysopen(FH, $path, O_WRONLY|O_APPEND)               or die $!;
+To open for update, where the file must exist:
+open(FH, "+<", $path)                               or die $!;
+sysopen(FH, $path, O_RDWR)                          or die $!;
+To open for update, but create a new file if necessary:
+sysopen(FH, $path, O_RDWR|O_CREAT)                  or die $!;
+sysopen(FH, $path, O_RDWR|O_CREAT, 0600)            or die $!;
+To open for update, where the file must not exist:
+sysopen(FH, $path, O_RDWR|O_EXCL|O_CREAT)           or die $!;
+sysopen(FH, $path, O_RDWR|O_EXCL|O_CREAT, 0600)     or die $!;
+We use a creation mask of 0600 here only to show how to create a private file. The argument is normally omitted.
+See Also
+The open, sysopen, and umask functions in perlfunc(1) and Chapter 29 of Programming Perl; the perlopentut(1) manpage; the documentation for the standard IO::File and Fcntl modules (also in Chapter 32 of Programming Perl); your system's open(2), fopen(3), and umask(2) manpages; Recipe 7.2; Recipe 9.11
