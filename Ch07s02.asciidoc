@@ -6,24 +6,24 @@ You want to read or write a file from Perl.
 
 ==== Solution
 
-Use open with two arguments for convenience or with three arguments for precision. Use sysopen for access to low-level features.
+Use open with two arguments for convenience or with three arguments for precision and safety. Use sysopen for access to low-level features.
 The open function takes arguments specifying the internal filehandle to open, the external filename, and some indication of how to open it (the access mode). Called with only two arguments, the second comprises both path and mode:
 
 ----
-open(SOURCE, "< $path")
+open(my $source, "< $path")
     or die "Couldn't open $path for reading: $!\n";
 
-open(SINK, "> $path")
+open(my $sink, "> $path")
     or die "Couldn't open $path for writing: $!\n";
 ----
 
 When called with three (or more) arguments, the mode is split out from the path, lest there be any ambiguity between one and the other:
 
 ----
-open(SOURCE, "<", $path)
+open(my $source, "<", $path)
     or die "Couldn't open $path for reading: $!\n";
 
-open(SINK, ">", $path)
+open(my $sink, ">", $path)
     or die "Couldn't open $path for writing: $!\n";
 ----
 
@@ -32,17 +32,18 @@ The sysopen function takes either three or four arguments: filehandle, filename,
 ----
 use Fcntl;
 
-sysopen(SOURCE, $path, O_RDONLY)
+sysopen(my $source, $path, O_RDONLY)
     or die "Couldn't open $path for reading: $!\n";
 
-sysopen(SINK, $path, O_WRONLY, 0600)
+sysopen(my $sink, $path, O_WRONLY, 0600)
     or die "Couldn't open $path for writing: $!\n";
 ----
 
-If you pass open or sysopen a scalar variable that's undefined, Perl fills in that variable with a new, anonymous filehandle.
+In older code, you may see open or sysopen using a bareword filehandle. Since bareword filehandles are global, they can cause unintended interactions
+between different pieces of code. They are normally avoided except in small scripts.
 
 ----
-open(my $fh, "<", $path)
+open(FH, "<", $path)
     or die "Couldn't open $path for reading: $!\n";
 ----
 
@@ -69,8 +70,8 @@ Here's a tip: you almost never want to use \+> or \+>>. The first clobbers your 
 The sysopen function takes either three or four arguments:
 
 ----
-sysopen(FILEHANDLE, $name, $flags)         or die "Can't open $name : $!";
-sysopen(FILEHANDLE, $name, $flags, $perms) or die "Can't open $name : $!";
+sysopen(my $filehandle, $name, $flags)         or die "Can't open $name : $!";
+sysopen(my $filehandle, $name, $flags, $perms) or die "Can't open $name : $!";
 ----
 
 $name is the name of the file, without any < or + funny business. $flags is a number, formed by ORing together separate values for O_CREAT, O_WRONLY, O_TRUNC, etc. Availability of particular O_* constants depends on your operating system, so consult the online documentation for this (usually open(2), but not always), or look in /usr/include/fcntl.h. Common ones are:
@@ -98,54 +99,54 @@ Here are examples of open and sysopen in action.
 To open for reading:
 
 ----
-open(FH, "<", $path)                                or die $!;
-sysopen(FH, $path, O_RDONLY)                        or die $!;
+open(my $fh, "<", $path)                                or die $!;
+sysopen(my $fh, $path, O_RDONLY)                        or die $!;
 ----
 
 To open for writing, create a new file if needed, or else truncate an old one:
 
 ----
-open(FH, ">", $path)                                or die $!;
-sysopen(FH, $path, O_WRONLY|O_TRUNC|O_CREAT)        or die $!;
-sysopen(FH, $path, O_WRONLY|O_TRUNC|O_CREAT, 0600)  or die $!;
+open(my $fh, ">", $path)                                or die $!;
+sysopen(my $fh, $path, O_WRONLY|O_TRUNC|O_CREAT)        or die $!;
+sysopen(my $fh, $path, O_WRONLY|O_TRUNC|O_CREAT, 0600)  or die $!;
 ----
 
 To open for writing, create a new file, but that file must not previously exist:
 
 ----
-sysopen(FH, $path, O_WRONLY|O_EXCL|O_CREAT)         or die $!;
-sysopen(FH, $path, O_WRONLY|O_EXCL|O_CREAT, 0600)   or die $!;
+sysopen(my $fh, $path, O_WRONLY|O_EXCL|O_CREAT)         or die $!;
+sysopen(my $fh, $path, O_WRONLY|O_EXCL|O_CREAT, 0600)   or die $!;
 ----
 
 To open for appending, creating it if necessary:
 
 ----
-open(FH, ">>", $path)                               or die $!;
-sysopen(FH, $path, O_WRONLY|O_APPEND|O_CREAT)       or die $!;
-sysopen(FH, $path, O_WRONLY|O_APPEND|O_CREAT, 0600) or die $!;
+open(my $fh, ">>", $path)                               or die $!;
+sysopen(my $fh, $path, O_WRONLY|O_APPEND|O_CREAT)       or die $!;
+sysopen(my $fh, $path, O_WRONLY|O_APPEND|O_CREAT, 0600) or die $!;
 ----
 
 To open for appending, where the file must exist:
 
 ----
-sysopen(FH, $path, O_WRONLY|O_APPEND)               or die $!;
+sysopen(my $fh, $path, O_WRONLY|O_APPEND)               or die $!;
 To open for update, where the file must exist:
-open(FH, "+<", $path)                               or die $!;
-sysopen(FH, $path, O_RDWR)                          or die $!;
+open(my $fh, "+<", $path)                               or die $!;
+sysopen(my $fh, $path, O_RDWR)                          or die $!;
 ----
 
 To open for update, but create a new file if necessary:
 
 ----
-sysopen(FH, $path, O_RDWR|O_CREAT)                  or die $!;
-sysopen(FH, $path, O_RDWR|O_CREAT, 0600)            or die $!;
+sysopen(my $fh, $path, O_RDWR|O_CREAT)                  or die $!;
+sysopen(my $fh, $path, O_RDWR|O_CREAT, 0600)            or die $!;
 ----
 
 To open for update, where the file must not exist:
 
 ----
-sysopen(FH, $path, O_RDWR|O_EXCL|O_CREAT)           or die $!;
-sysopen(FH, $path, O_RDWR|O_EXCL|O_CREAT, 0600)     or die $!;
+sysopen(my $fh, $path, O_RDWR|O_EXCL|O_CREAT)           or die $!;
+sysopen(my $fh, $path, O_RDWR|O_EXCL|O_CREAT, 0600)     or die $!;
 ----
 
 We use a creation mask of 0600 here only to show how to create a private file. The argument is normally omitted.
